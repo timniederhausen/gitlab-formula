@@ -1,0 +1,10 @@
+gitlab:
+  user: git
+  group: git
+  service_enabled: true
+  config: {}
+  database: {}
+  git_config:
+    core.autocrlf: input
+    gc.auto: 0
+    repack.writeBitmaps: 'true'

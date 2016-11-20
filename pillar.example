@@ -1,0 +1,30 @@
+gitlab:
+  user: git
+  group: git
+  service_enabled: true
+  root_password: djakldjafjk
+  root_email: git@example.com
+  config:
+    production:
+      gitlab:
+        host: git.example.com
+        port: 80 # 443
+        https: false
+        trusted_proxies:
+        email_from: hans@example.com
+  database:
+    production:
+      adapter: mysql2
+      encoding: utf8
+      collation: utf8_general_ci
+      reconnect: false
+      database: gitlabhq_production
+      pool: 10
+      username: git
+      password: "secure password"
+      # host: localhost
+      # socket: /tmp/mysql.sock
+  git_config:
+    core.autocrlf: input
+    gc.auto: 0
+    repack.writeBitmaps: 'true'

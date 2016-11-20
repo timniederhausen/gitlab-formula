@@ -1,0 +1,4 @@
+FreeBSD:
+  directory: /usr/local/www/gitlab
+  package: gitlab
+  service: gitlab

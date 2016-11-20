@@ -1,0 +1,16 @@
+{% import_yaml 'gitlab/defaults.yaml' as defaults %}
+{% import_yaml 'gitlab/osmap.yaml' as osmap %}
+
+{# get the settings for the os_family grain #}
+{% set osfam = salt['grains.filter_by'](osmap) or {} %}
+
+{# merge the os family/codename specific data over the defaults #}
+{% do defaults.gitlab.update(osfam) %}
+
+{# merge the pillar:lookup dict into the defaults/os specific dict #}
+{% set lookup = salt['pillar.get']('gitlab:lookup',
+                                   default=defaults.gitlab,
+                                   merge=True) %}
+
+{# merge the actual gitlab pillar into the above combined dict #}
+{% set gitlab = salt['pillar.get']('gitlab', default=lookup, merge=True) %}
