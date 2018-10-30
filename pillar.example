@@ -2,8 +2,11 @@ gitlab:
   user: git
   group: git
   service_enabled: true
-  root_password: djakldjafjk
-  root_email: git@example.com
+
+  root_user:
+    password: djakldjafjk
+    email: git@example.com
+
   config:
     production:
       gitlab:
@@ -12,19 +15,26 @@ gitlab:
         https: false
         trusted_proxies:
         email_from: hans@example.com
+
   database:
     production:
-      adapter: mysql2
-      encoding: utf8
-      collation: utf8_general_ci
-      reconnect: false
+      adapter: postgresql
+      encoding: unicode
       database: gitlabhq_production
       pool: 10
       username: git
       password: "secure password"
-      # host: localhost
-      # socket: /tmp/mysql.sock
+      host: localhost
+
+  secrets:
+    production:
+      db_key_base: 'Lh8lPiofuvg5XxHLC_4u8ZZ5xq95Wf62'
+
+  resque:
+    production:
+      url: redis://localhost:6379
+
   git_config:
-    core.autocrlf: input
-    gc.auto: 0
-    repack.writeBitmaps: 'true'
+    'core.autocrlf': input
+    'gc.auto': 0
+    'repack.writeBitmaps': 'true'

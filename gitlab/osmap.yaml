@@ -1,4 +1,32 @@
 FreeBSD:
-  directory: /usr/local/www/gitlab
-  package: gitlab
+  directory: /home/git/gitlab
+  workhorse:
+    directory: /home/git/gitlab-workhorse
+  gitaly:
+    directory: /home/git/gitaly
+
+  prereq_pks:
+    - git
+    - yarn
+    - re2
+    - rubygem-bundler
+    - gmake
+    - go
+    - redis
+    - grpc
+    - cmake
+
+  config:
+    production:
+      git:
+        bin_path: /usr/local/bin/git
+
+  redis:
+    config_path: /usr/local/etc/redis.conf
+    socket_path: /var/run/redis/redis.sock
+
+  resque:
+    production:
+      url: unix:/var/run/redis/redis.sock
+
   service: gitlab

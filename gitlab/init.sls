@@ -1,30 +1,19 @@
-{% from 'gitlab/map.jinja' import gitlab %}
-
-{% set gitlab_configs = ['gitlab_config_gitlab', 'gitlab_config_database'] %}
-
-{% macro file_requisites(states) %}
-{%- for state in states %}
-- file: {{ state }}
-{%- endfor -%}
-{% endmacro %}
+{% from 'gitlab/map.jinja' import gitlab, configs %}
 
 include:
-  - gitlab.pkg
-  - gitlab.config
   - gitlab.install
   - gitlab.service
 
 extend:
   gitlab_service:
     service:
-      - watch:
-        {{ file_requisites(gitlab_configs) | indent(8) }}
       - require:
-        {{ file_requisites(gitlab_configs) | indent(8) }}
-        - pkg: gitlab_install
-  {%- for cfg in gitlab_configs %}
-  {{ cfg }}:
+        - cmd: gitlab_setup
+  {%- for name in configs.keys() %}
+  gitlab_config_{{ name }}:
     file:
-      - require:
-        - pkg: gitlab_install
+      - watch_in:
+        - service: gitlab_service
+      - require_in:
+        - service: gitlab_service
   {%- endfor %}

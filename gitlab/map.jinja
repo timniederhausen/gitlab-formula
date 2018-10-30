@@ -14,3 +14,17 @@
 
 {# merge the actual gitlab pillar into the above combined dict #}
 {% set gitlab = salt['pillar.get']('gitlab', default=lookup, merge=True) %}
+
+{% do gitlab.update({
+  'resque': {
+    'production': { 'url': gitlab.redis.socket_path }
+  }
+}) %}
+
+{# different GitLab config files we manage #}
+{% set configs = {
+  'gitlab': 'config',
+  'database': 'database',
+  'secrets': 'secrets',
+  'resque': 'resque',
+} %}
