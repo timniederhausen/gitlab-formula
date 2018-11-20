@@ -2,7 +2,7 @@
 
 {% set service_function = 'running' if gitlab.service_enabled else 'dead' %}
 
-{% if grains.os_family == 'FreeBSD' %}
+{% if grains.os_family == 'FreeBSD' and not gitlab.use_package %}
 gitlab_service_script:
   file.managed:
     - name: /usr/local/etc/rc.d/{{ gitlab.service }}

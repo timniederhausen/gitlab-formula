@@ -15,6 +15,7 @@ FreeBSD:
     - redis
     - grpc
     - cmake
+  package: gitlab-ce
 
   config:
     production:

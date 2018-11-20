@@ -34,6 +34,11 @@ gitlab_git_cfg_{{ name }}:
     - global: true
 {%- endfor %}
 
+{%- if gitlab.use_package %}
+gitlab_package:
+  pkg.installed:
+    - name: {{ gitlab.package }}
+{%- else %}
 gitlab_checkout:
   git.latest:
     - name: {{ gitlab.repository.url }}
@@ -43,6 +48,7 @@ gitlab_checkout:
     - force_reset: true
 {%- if gitlab.repository.depth is defined %}
     - depth: {{ gitlab.repository.depth }}
+{%- endif %}
 {%- endif %}
 
 gitlab_public_uploads:
@@ -75,6 +81,7 @@ gitlab_config_{{ name }}:
 {%-  endif %}
 {%- endfor %}
 
+{%- if not gitlab.use_package %}
 gitlab_bundle_install:
   cmd.run:
     - name: bundle install --deployment --without development test mysql aws kerberos && touch .bundle.stamp
@@ -116,6 +123,7 @@ gitlab_gitaly:
     - creates: {{ gitlab.directory }}/.gitaly.stamp
     - env:
       - RAILS_ENV: production
+{%- endif %}
 
 gitlab_setup:
   cmd.run:
@@ -133,3 +141,15 @@ gitlab_setup:
 {%- if gitlab.root_user.email is defined %}
       - GITLAB_ROOT_EMAIL: {{ gitlab.root_user.email | yaml_encode }}
 {%- endif %}
+
+gitlab_assets_precompile:
+  cmd.run:
+    - name: bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile
+    - cwd: {{ gitlab.directory }}
+    - runas: {{ gitlab.user }}
+    - env:
+      - RAILS_ENV: production
+      - NODE_ENV: production
+      - NODE_OPTIONS: '--max_old_space_size=4096'
+    - onchanges:
+      - cmd: gitlab_setup

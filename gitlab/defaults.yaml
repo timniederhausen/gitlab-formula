@@ -7,6 +7,8 @@ gitlab:
     url: https://gitlab.com/gitlab-org/gitlab-ce.git
     rev: 11-4-stable
 
+  use_package: false
+
   git_config:
     'core.autocrlf': input
     'gc.auto': '0'
